@@ -31,7 +31,11 @@ export async function signup(request, response) {
       existingUser.emailVerificationToken = verificationToken;
       existingUser.emailVerificationExpires = new Date(Date.now() + 1000 * 60 * 60);
       await existingUser.save();
-      await sendVerificationEmail(existingUser, verificationToken);
+      try {
+        await sendVerificationEmail(existingUser, verificationToken);
+      } catch (error) {
+        console.log("Failed to send verification email:", error.message);
+      }
 
       response.status(200).json({
         message: "A new verification email has been sent"
@@ -46,10 +50,14 @@ export async function signup(request, response) {
     ...request.body,
     emailVerificationToken: verificationToken,
     emailVerificationExpires: new Date(Date.now() + 1000 * 60 * 60),
-    emailVerified: !process.env.SMTP_HOST // Auto-verify if SMTP not configured
+    emailVerified: !process.env.SMTP_HOST
   });
 
-  await sendVerificationEmail(user, verificationToken);
+  try {
+    await sendVerificationEmail(user, verificationToken);
+  } catch (error) {
+    console.log("Failed to send verification email:", error.message);
+  }
 
   response.status(201).json({
     message: process.env.SMTP_HOST
