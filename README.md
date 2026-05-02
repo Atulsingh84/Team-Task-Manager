@@ -1,137 +1,157 @@
-# Project Task Platform
+# Project Desk
 
-A clean project and task management platform with email login, Google login support, MongoDB relationships, role-based project access, task assignment, status tracking, dashboard metrics, and light/dark mode.
+**A clean, intuitive project and task management platform for teams.**
 
-## Stack
+Organize projects, assign tasks, track progress, and collaborate seamlessly—all in one place.
 
-- React + Vite
-- Express
-- MongoDB + Mongoose
-- JWT authentication
-- SMTP email verification
-- Google identity token verification
+---
 
-## Setup
+## ✨ Features
 
-Install dependencies:
+### 🔐 Authentication
+- **Email Sign-up** - Create an account with email verification
+- **Password Reset** - Forgot your password? Reset it securely via email
+- **Secure Login** - JWT-based authentication for safety
 
-```bash
-npm run install:all
-```
+### 📊 Dashboard
+- **Quick Overview** - See all your projects and tasks at a glance
+- **Task Statistics** - View pending, in-progress, completed, and overdue tasks
+- **Recent Projects** - Quick access to your most recent work
+- **Overdue Alerts** - Stay on top of tasks that need attention
 
-Create environment files:
+### 📁 Projects
+- **Create Projects** - Start a new project in seconds
+- **Manage Members** - Add team members by searching their names or emails
+- **Role-Based Access** - Control who can edit, view, or manage projects
+- **Project Details** - Update descriptions and keep everything organized
 
-```bash
-cp server/.env.example server/.env
-cp client/.env.example client/.env
-```
+### ✅ Tasks
+- **Create Tasks** - Add tasks with titles, descriptions, and due dates
+- **Assign Members** - Assign tasks to team members by name
+- **Track Status** - Change task status: Pending → In Progress → Completed
+- **Task Board** - Visual task organization for better workflow
 
-Update `server/.env` with your MongoDB Atlas URI, JWT secret, SMTP details, and Google client ID.
+### 👥 Team Management
+- **Add Members** - Invite teammates to collaborate (search by name)
+- **Set Roles** - Assign Admin or Member roles
+- **Permission Control** - Admins manage everything, Members update their tasks
 
-Example Atlas URI:
+### 🎨 UI & Experience
+- **Light/Dark Mode** - Choose your preferred theme
+- **Responsive Design** - Works on desktop, tablet, and mobile
+- **Real-time Updates** - Changes appear instantly across your workspace
 
-```bash
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/project_task_platform?retryWrites=true&w=majority
-```
+---
 
-Run the app:
+## 🚀 Quick Start
 
-```bash
-npm run dev
-```
+### 1. **Sign Up**
+   - Go to the login page
+   - Click "Signup"
+   - Enter your name, email, and password
+   - Verify your email (check inbox)
+   - Done! You're ready to create projects
 
-Client: `http://localhost:5173`
+### 2. **Create Your First Project**
+   - Click "Projects" in the sidebar
+   - Click "Create Project"
+   - Enter project name and description
+   - You're automatically set as Admin
 
-Server: `http://localhost:5000`
+### 3. **Add Team Members**
+   - Go to "Members" tab in your project
+   - Search for members by name or email
+   - Select role (Admin or Member)
+   - Click "Add Member"
 
-## SMTP Email Login
+### 4. **Create Tasks**
+   - Go to "Tasks" in your project
+   - Click "Add Task"
+   - Enter task title, assign to a member, set due date
+   - Add details/description
+   - Click "Add Task"
 
-Email signup now sends a verification link before the user can log in. For Gmail, create an app password and use:
+### 5. **Track Progress**
+   - Drag tasks between status columns (Pending → In Progress → Completed)
+   - Or click a task and change status
+   - View dashboard for overall progress
 
-```bash
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=465
-SMTP_SECURE=true
-SMTP_USER=your-email@gmail.com
-SMTP_PASS=your-app-password
-SMTP_FROM="TaskFlow <your-email@gmail.com>"
-APP_URL=http://localhost:5173
-```
+---
 
-For deployment, set `APP_URL` to your Railway app URL.
+## 📋 Task Statuses
 
-## Google Login
+- **Pending** - Task assigned, not started
+- **In Progress** - Work is underway
+- **Completed** - Task finished
 
-Create a Google OAuth web client and put the same client ID in both env files:
+---
 
-```bash
-server/.env: GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
-client/.env: VITE_GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
-```
+## 👥 Roles & Permissions
 
-Add these local authorized JavaScript origins in Google Cloud:
+| Action | Admin | Member |
+|--------|-------|--------|
+| Create Projects | ✅ | ❌ |
+| Add/Remove Members | ✅ | ❌ |
+| Change Task Status | ✅ | ✅ |
+| Delete Tasks | ✅ | ❌ |
+| View Project Data | ✅ | ✅ |
 
-```text
-http://localhost:5173
-http://127.0.0.1:5173
-http://localhost:5174
-http://127.0.0.1:5174
-```
+---
 
-After deployment, add your Railway public domain as another authorized JavaScript origin.
+## 🔑 Password Reset
 
-## Railway Deployment
+Forgot your password?
+1. Click "Forgot your password?" on login
+2. Enter your email
+3. Check your inbox for reset link
+4. Create a new password
+5. Log in with new password
 
-This project is set up as one Railway service. Express serves the built React app and the API from the same domain, so production uses `/api` and does not depend on localhost.
+---
 
-Railway settings:
+## 🌙 Themes
 
-```text
-Build command: npm run build
-Start command: npm start
-Health check path: /health
-```
+Toggle between **Light Mode** and **Dark Mode** using the theme button in the top-right corner.
 
-Required Railway variables:
+---
 
-```bash
-MONGO_URI=your-atlas-uri
-JWT_SECRET=long-random-secret
-CLIENT_ORIGINS=https://your-app.up.railway.app
-APP_URL=https://your-app.up.railway.app
-GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=465
-SMTP_SECURE=true
-SMTP_USER=your-email@gmail.com
-SMTP_PASS=your-app-password
-SMTP_FROM="TaskFlow <your-email@gmail.com>"
-VITE_API_URL=/api
-VITE_GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
-```
+## 📱 Supported Browsers
 
-## Access Levels
+- Chrome/Chromium (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
 
-- Admins can manage project details, members, roles, and tasks.
-- Members can view assigned project data and update task progress.
+---
 
-## API Surface
+## ❓ FAQ
 
-- `POST /api/auth/signup`
-- `POST /api/auth/login`
-- `POST /api/auth/google`
-- `POST /api/auth/verify-email`
-- `GET /api/auth/me`
-- `GET /api/projects`
-- `POST /api/projects`
-- `GET /api/projects/:projectId`
-- `PATCH /api/projects/:projectId`
-- `DELETE /api/projects/:projectId`
-- `POST /api/projects/:projectId/members`
-- `PATCH /api/projects/:projectId/members/:memberId`
-- `DELETE /api/projects/:projectId/members/:memberId`
-- `GET /api/projects/:projectId/tasks`
-- `POST /api/projects/:projectId/tasks`
-- `PATCH /api/projects/:projectId/tasks/:taskId`
-- `DELETE /api/projects/:projectId/tasks/:taskId`
-- `GET /api/dashboard`
+**Q: Can I change my role in a project?**
+A: Only Admins can change member roles. Contact your project Admin.
+
+**Q: How many projects can I create?**
+A: Unlimited! Create as many as you need.
+
+**Q: Can I export my tasks?**
+A: Currently not available. Coming soon!
+
+**Q: Is my data secure?**
+A: Yes! We use JWT authentication and encrypted passwords.
+
+---
+
+## 🆘 Need Help?
+
+Having issues? 
+- Check if you're logged in
+- Verify your email is confirmed
+- Try refreshing the page
+- Clear browser cache if things look odd
+
+---
+
+## 📞 Support
+
+For bugs or feature requests, contact the development team.
+
+Enjoy managing your projects! 🎉
