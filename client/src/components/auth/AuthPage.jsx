@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { GoogleLogin } from "@react-oauth/google";
 import { FolderKanban } from "lucide-react";
 import { Alert } from "../ui/alert.jsx";
 import { Button } from "../ui/button.jsx";
@@ -8,10 +7,11 @@ import { Input } from "../ui/input.jsx";
 import { Label } from "../ui/label.jsx";
 import { Tabs, TabsTrigger } from "../ui/tabs.jsx";
 
-export function AuthPage({ error, googleLoginReady, onEmailAuth, onVerifyEmail, onGoogleAuth, onGoogleError, onForgotPassword, onResetPassword }) {
+export function AuthPage({ error, onEmailAuth, onVerifyEmail, onForgotPassword, onResetPassword }) {
   const [authMode, setAuthMode] = useState("login");
   const [authForm, setAuthForm] = useState({ name: "", email: "", password: "" });
   const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
   const [resetToken, setResetToken] = useState("");
@@ -34,30 +34,45 @@ export function AuthPage({ error, googleLoginReady, onEmailAuth, onVerifyEmail, 
   async function submitAuth(event) {
     event.preventDefault();
     setMessage("");
-    const result = await onEmailAuth(authMode, authForm);
+    setIsLoading(true);
+    try {
+      const result = await onEmailAuth(authMode, authForm);
 
-    if (result?.message) {
-      setMessage(result.message);
-      setAuthMode("login");
+      if (result?.message) {
+        setMessage(result.message);
+        setAuthMode("login");
+      }
+    } finally {
+      setIsLoading(false);
     }
   }
 
   async function submitForgotPassword(event) {
     event.preventDefault();
     setMessage("");
-    const result = await onForgotPassword(forgotEmail);
-    if (result?.message) {
-      setMessage(result.message);
+    setIsLoading(true);
+    try {
+      const result = await onForgotPassword(forgotEmail);
+      if (result?.message) {
+        setMessage(result.message);
+      }
+    } finally {
+      setIsLoading(false);
     }
   }
 
   async function submitResetPassword(event) {
     event.preventDefault();
     setMessage("");
-    const result = await onResetPassword(resetToken, newPassword);
-    if (result?.token) {
-      setShowForgotPassword(false);
-      setMessage("Password reset successfully. You are now logged in!");
+    setIsLoading(true);
+    try {
+      const result = await onResetPassword(resetToken, newPassword);
+      if (result?.token) {
+        setShowForgotPassword(false);
+        setMessage("Password reset successfully. You are now logged in!");
+      }
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -85,15 +100,17 @@ export function AuthPage({ error, googleLoginReady, onEmailAuth, onVerifyEmail, 
 
               <Label>
                 Email
-                <Input type="email" value={forgotEmail} onChange={(event) => setForgotEmail(event.target.value)} required />
+                <Input type="email" value={forgotEmail} onChange={(event) => setForgotEmail(event.target.value)} required disabled={isLoading} />
               </Label>
 
               {message && <Alert>{message}</Alert>}
               {error && <Alert variant="destructive">{error}</Alert>}
 
               <div style={{ display: "flex", gap: "0.5rem" }}>
-                <Button type="submit">Send reset link</Button>
-                <Button type="button" variant="outline" onClick={() => setShowForgotPassword(false)}>
+                <Button type="submit" disabled={isLoading} style={{ opacity: isLoading ? 0.6 : 1 }}>
+                  {isLoading ? "Sending..." : "Send reset link"}
+                </Button>
+                <Button type="button" variant="outline" onClick={() => setShowForgotPassword(false)} disabled={isLoading}>
                   Back to login
                 </Button>
               </div>
@@ -124,13 +141,15 @@ export function AuthPage({ error, googleLoginReady, onEmailAuth, onVerifyEmail, 
             <form className="form-stack" onSubmit={submitResetPassword}>
               <Label>
                 New Password
-                <Input type="password" minLength={8} value={newPassword} onChange={(event) => setNewPassword(event.target.value)} required />
+                <Input type="password" minLength={8} value={newPassword} onChange={(event) => setNewPassword(event.target.value)} required disabled={isLoading} />
               </Label>
 
               {message && <Alert>{message}</Alert>}
               {error && <Alert variant="destructive">{error}</Alert>}
 
-              <Button type="submit">Reset password</Button>
+              <Button type="submit" disabled={isLoading} style={{ opacity: isLoading ? 0.6 : 1 }}>
+                {isLoading ? "Resetting..." : "Reset password"}
+              </Button>
             </form>
           </CardContent>
         </Card>
@@ -155,10 +174,10 @@ export function AuthPage({ error, googleLoginReady, onEmailAuth, onVerifyEmail, 
 
         <CardContent>
           <Tabs>
-            <TabsTrigger active={authMode === "login"} onClick={() => setAuthMode("login")}>
+            <TabsTrigger active={authMode === "login"} onClick={() => setAuthMode("login")} disabled={isLoading}>
               Login
             </TabsTrigger>
-            <TabsTrigger active={authMode === "signup"} onClick={() => setAuthMode("signup")}>
+            <TabsTrigger active={authMode === "signup"} onClick={() => setAuthMode("signup")} disabled={isLoading}>
               Signup
             </TabsTrigger>
           </Tabs>
@@ -167,13 +186,13 @@ export function AuthPage({ error, googleLoginReady, onEmailAuth, onVerifyEmail, 
             {authMode === "signup" && (
               <Label>
                 Name
-                <Input value={authForm.name} onChange={(event) => setAuthForm({ ...authForm, name: event.target.value })} required />
+                <Input value={authForm.name} onChange={(event) => setAuthForm({ ...authForm, name: event.target.value })} required disabled={isLoading} />
               </Label>
             )}
 
             <Label>
               Email
-              <Input type="email" value={authForm.email} onChange={(event) => setAuthForm({ ...authForm, email: event.target.value })} required />
+              <Input type="email" value={authForm.email} onChange={(event) => setAuthForm({ ...authForm, email: event.target.value })} required disabled={isLoading} />
             </Label>
 
             <Label>
@@ -184,24 +203,25 @@ export function AuthPage({ error, googleLoginReady, onEmailAuth, onVerifyEmail, 
                 value={authForm.password}
                 onChange={(event) => setAuthForm({ ...authForm, password: event.target.value })}
                 required
+                disabled={isLoading}
               />
             </Label>
 
             {message && <Alert>{message}</Alert>}
             {error && <Alert variant="destructive">{error}</Alert>}
 
-            <Button type="submit">{authMode === "login" ? "Login" : "Create account"}</Button>
+            <Button type="submit" disabled={isLoading} style={{ opacity: isLoading ? 0.6 : 1 }}>
+              {isLoading ? (authMode === "login" ? "Logging in..." : "Creating account...") : authMode === "login" ? "Login" : "Create account"}
+            </Button>
 
             {authMode === "login" && (
-              <button type="button" className="text-link" onClick={() => setShowForgotPassword(true)} style={{ textAlign: "center", fontSize: "0.9rem" }}>
+              <button type="button" className="text-link" onClick={() => setShowForgotPassword(true)} style={{ textAlign: "center", fontSize: "0.9rem" }} disabled={isLoading}>
                 Forgot your password?
               </button>
             )}
           </form>
-
         </CardContent>
       </Card>
     </main>
   );
 }
-
