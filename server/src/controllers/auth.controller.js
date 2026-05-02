@@ -31,11 +31,7 @@ export async function signup(request, response) {
       existingUser.emailVerificationToken = verificationToken;
       existingUser.emailVerificationExpires = new Date(Date.now() + 1000 * 60 * 60);
       await existingUser.save();
-      try {
-        await sendVerificationEmail(existingUser, verificationToken);
-      } catch (error) {
-        console.log("Failed to send verification email:", error.message);
-      }
+      // await sendVerificationEmail(existingUser, verificationToken); // TODO: Enable when email is configured
 
       response.status(200).json({
         message: "A new verification email has been sent"
@@ -50,19 +46,13 @@ export async function signup(request, response) {
     ...request.body,
     emailVerificationToken: verificationToken,
     emailVerificationExpires: new Date(Date.now() + 1000 * 60 * 60),
-    emailVerified: !process.env.SMTP_HOST
+    emailVerified: true // Auto-verify for now
   });
 
-  try {
-    await sendVerificationEmail(user, verificationToken);
-  } catch (error) {
-    console.log("Failed to send verification email:", error.message);
-  }
+  // await sendVerificationEmail(user, verificationToken); // TODO: Enable when email is configured
 
   response.status(201).json({
-    message: process.env.SMTP_HOST
-      ? "Check your email to verify your account before logging in"
-      : "Account created! You can now login."
+    message: "Account created! You can now login."
   });
 }
 
@@ -79,9 +69,10 @@ export async function login(request, response) {
     throw new HttpError(401, "Invalid email or password");
   }
 
-  if (!user.emailVerified) {
-    throw new HttpError(403, "Please verify your email before logging in");
-  }
+  // Email verification skipped for now - TODO: Enable when email is configured
+  // if (!user.emailVerified) {
+  //   throw new HttpError(403, "Please verify your email before logging in");
+  // }
 
   sendSession(response, user);
 }

@@ -1,50 +1,48 @@
-import axios from "axios";
+import { MailtrapClient } from "mailtrap";
 
-const MAILTRAP_API_URL = "https://send.api.mailtrap.io/api/send";
-const MAILTRAP_API_TOKEN = process.env.MAILTRAP_API_TOKEN;
+const client = new MailtrapClient({
+  token: process.env.MAILTRAP_API_TOKEN,
+});
 
+const sender = {
+  email: "hello@demomailtrap.co",
+  name: "Project Desk",
+};
+
+/**
+ * Generic Mailtrap transactional email sender
+ */
 async function sendMailtrapEmail(to, subject, html) {
-  if (!MAILTRAP_API_TOKEN) {
-    console.log("ℹ️ MAILTRAP_API_TOKEN not configured - email skipped for:", to);
+  if (!process.env.MAILTRAP_API_TOKEN) {
+    console.log("ℹ️ MAILTRAP_API_TOKEN not configured - skipping email for:", to);
     return;
   }
 
   try {
-    const response = await axios.post(
-      MAILTRAP_API_URL,
-      {
-        from: {
-          email: "hello@demomailtrap.co",
-          name: "Project Desk"
-        },
-        to: [
-          {
-            email: to
-          }
-        ],
-        subject: subject,
-        html: html,
-        category: "ProjectDesk"
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${MAILTRAP_API_TOKEN}`,
-          "Content-Type": "application/json"
-        },
-        timeout: 10000
-      }
-    );
+    const response = await client.send({
+      from: sender,
+      to: [{ email: to }],
+      subject,
+      html,
+      category: "ProjectDesk",
+    });
 
-    console.log("✅ Email sent successfully to:", to, "| Response ID:", response.data.success);
-    return response.data;
+    console.log("✅ Email sent successfully to:", to, "| Message ID:", response.message_ids?.[0] || response.id);
+
+    return response;
   } catch (error) {
     console.error("❌ Failed to send email to:", to);
-    console.error("Error message:", error.response?.data?.message || error.message);
-    console.error("Error status:", error.response?.status);
+    console.error("Error:", error.message);
+    if (error.response?.data) {
+      console.error("Mailtrap Response:", error.response.data);
+    }
     throw error;
   }
 }
 
+/**
+ * Send account verification email
+ */
 export async function sendVerificationEmail(user, token) {
   const appUrl = process.env.APP_URL || "http://localhost:5173";
   const verifyUrl = `${appUrl}/verify-email?token=${token}`;
@@ -59,7 +57,7 @@ export async function sendVerificationEmail(user, token) {
         <p style="margin: 0 0 20px 0; font-size: 16px;">Hi <strong>${user.name}</strong>,</p>
 
         <p style="margin: 0 0 30px 0; font-size: 15px; color: #6b7280;">
-          Thank you for signing up! Please verify your email address to activate your account and get started with managing your projects.
+          Thank you for signing up! Please verify your email address to activate your account and start managing your projects.
         </p>
 
         <div style="text-align: center; margin: 30px 0;">
@@ -69,8 +67,9 @@ export async function sendVerificationEmail(user, token) {
         </div>
 
         <p style="margin: 30px 0 0 0; font-size: 14px; color: #9ca3af;">
-          Or copy and paste this link in your browser:
+          Or copy and paste this link into your browser:
         </p>
+
         <p style="margin: 10px 0 0 0; font-size: 13px; color: #5b3df5; word-break: break-all;">
           ${verifyUrl}
         </p>
@@ -78,19 +77,26 @@ export async function sendVerificationEmail(user, token) {
         <hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e7eb;">
 
         <p style="margin: 0; font-size: 12px; color: #9ca3af;">
-          This verification link will expire in 1 hour. If you didn't create this account, you can safely ignore this email.
+          This verification link expires in 1 hour. If you didn’t create this account, you can safely ignore this email.
         </p>
       </div>
     </div>
   `;
 
   try {
-    await sendMailtrapEmail(user.email, "Verify Your Project Desk Account", html);
+    await sendMailtrapEmail(
+      user.email,
+      "Verify Your Project Desk Account",
+      html
+    );
   } catch (error) {
-    console.error("Failed to send verification email:", error.message);
+    console.error("❌ Failed to send verification email:", error.message);
   }
 }
 
+/**
+ * Send password reset email
+ */
 export async function sendPasswordResetEmail(user, token) {
   const appUrl = process.env.APP_URL || "http://localhost:5173";
   const resetUrl = `${appUrl}/reset-password?token=${token}`;
@@ -105,7 +111,7 @@ export async function sendPasswordResetEmail(user, token) {
         <p style="margin: 0 0 20px 0; font-size: 16px;">Hi <strong>${user.name}</strong>,</p>
 
         <p style="margin: 0 0 30px 0; font-size: 15px; color: #6b7280;">
-          We received a request to reset your password. Click the button below to create a new password.
+          We received a request to reset your password. Click below to securely create a new password.
         </p>
 
         <div style="text-align: center; margin: 30px 0;">
@@ -115,8 +121,9 @@ export async function sendPasswordResetEmail(user, token) {
         </div>
 
         <p style="margin: 30px 0 0 0; font-size: 14px; color: #9ca3af;">
-          Or copy and paste this link in your browser:
+          Or copy and paste this link into your browser:
         </p>
+
         <p style="margin: 10px 0 0 0; font-size: 13px; color: #5b3df5; word-break: break-all;">
           ${resetUrl}
         </p>
@@ -124,15 +131,19 @@ export async function sendPasswordResetEmail(user, token) {
         <hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e7eb;">
 
         <p style="margin: 0; font-size: 12px; color: #9ca3af;">
-          This reset link will expire in 1 hour. If you didn't request a password reset, please ignore this email and your account will remain secure.
+          This reset link expires in 1 hour. If you didn’t request a password reset, you can safely ignore this email.
         </p>
       </div>
     </div>
   `;
 
   try {
-    await sendMailtrapEmail(user.email, "Reset Your Project Desk Password", html);
+    await sendMailtrapEmail(
+      user.email,
+      "Reset Your Project Desk Password",
+      html
+    );
   } catch (error) {
-    console.error("Failed to send password reset email:", error.message);
+    console.error("❌ Failed to send password reset email:", error.message);
   }
-}
+} 
