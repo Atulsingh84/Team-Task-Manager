@@ -19,7 +19,7 @@ export function AuthPage({ error, onEmailAuth, onVerifyEmail, onForgotPassword, 
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const verifyToken = params.get("verifyToken");
+    const verifyToken = params.get("token") || params.get("verifyToken"); // Support both formats
     const resetTokenParam = params.get("resetToken");
 
     if (verifyToken) {
