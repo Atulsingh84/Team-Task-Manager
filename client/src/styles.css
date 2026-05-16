@@ -227,24 +227,30 @@ p {
   grid-template-columns: 1fr 1fr;
   gap: 5px;
   padding: 5px;
-  border-radius: 8px;
+  border-radius: 10px;
   background: var(--muted);
   margin-bottom: 18px;
+  transition: background 240ms ease, border-color 240ms ease;
 }
 
 .ui-tabs-trigger {
   min-height: 36px;
   border: 0;
-  border-radius: 7px;
+  border-radius: 10px;
   color: var(--muted-foreground);
   background: transparent;
   font-weight: 750;
+  transition: color 240ms ease, background 240ms ease, transform 240ms ease, box-shadow 240ms ease;
+}
+
+.ui-tabs-trigger:hover {
+  transform: translateY(-1px);
 }
 
 .ui-tabs-trigger.is-active {
   color: var(--primary);
   background: var(--card);
-  box-shadow: 0 1px 8px rgba(16, 24, 40, 0.08);
+  box-shadow: 0 8px 22px rgba(16, 24, 40, 0.12);
 }
 
 .ui-badge {
@@ -320,36 +326,38 @@ p {
   padding: 32px;
   position: relative;
   overflow: hidden;
-  background: radial-gradient(circle at top left, rgba(63, 167, 255, 0.24), transparent 18%),
-    radial-gradient(circle at bottom right, rgba(11, 130, 242, 0.16), transparent 20%),
-    linear-gradient(180deg, #eef8ff 0%, #d9eeff 100%);
+  background: radial-gradient(circle at top left, rgba(6, 16, 35, 0.96), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(4, 42, 82, 0.95), transparent 28%),
+    linear-gradient(180deg, #050c18 0%, #081426 100%);
+  color: #eef4ff;
 }
 
 .auth-page::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.72), transparent 22%),
-    radial-gradient(circle at 85% 15%, rgba(76, 167, 255, 0.14), transparent 18%),
-    radial-gradient(circle at 50% 90%, rgba(11, 130, 242, 0.08), transparent 18%);
+  background: radial-gradient(circle at 18% 18%, rgba(63, 167, 255, 0.18), transparent 14%),
+    radial-gradient(circle at 86% 12%, rgba(255, 255, 255, 0.06), transparent 14%),
+    radial-gradient(circle at 50% 92%, rgba(11, 130, 242, 0.12), transparent 18%);
   pointer-events: none;
 }
 
 .auth-card {
-  width: min(460px, 100%);
+  width: min(480px, 100%);
   border-radius: 28px;
-  background: rgba(255, 255, 255, 0.88);
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  box-shadow: 0 30px 80px rgba(16, 24, 40, 0.12);
-  backdrop-filter: blur(14px);
-  transition: transform 250ms ease, box-shadow 250ms ease, background 250ms ease;
+  background: rgba(8, 18, 36, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 36px 90px rgba(0, 0, 0, 0.38);
+  backdrop-filter: blur(20px);
+  transition: transform 280ms ease, box-shadow 280ms ease, border-color 280ms ease, background 280ms ease;
+  animation: authFadeIn 0.75s ease-out both;
   position: relative;
   z-index: 1;
 }
 
 .auth-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 42px 100px rgba(16, 24, 40, 0.16);
+  transform: translateY(-4px);
+  box-shadow: 0 44px 110px rgba(0, 0, 0, 0.44);
 }
 
 .brand-row {
@@ -361,12 +369,12 @@ p {
 .brand-mark {
   width: 44px;
   height: 44px;
-  border-radius: 14px;
+  border-radius: 16px;
   display: grid;
   place-items: center;
   color: #ffffff;
   background: linear-gradient(135deg, #3fa7ff, #0b82f2);
-  box-shadow: 0 14px 28px rgba(11, 130, 242, 0.22);
+  box-shadow: 0 16px 36px rgba(11, 130, 242, 0.24);
   flex: 0 0 auto;
 }
 
@@ -381,17 +389,28 @@ p {
 .text-link {
   background: transparent;
   border: none;
-  color: var(--primary);
+  color: #a8d4ff;
   cursor: pointer;
   font-weight: 700;
-  transition: color 220ms ease, transform 220ms ease, opacity 220ms ease;
+  transition: color 240ms ease, transform 240ms ease, opacity 240ms ease;
   padding: 0;
 }
 
+@keyframes authFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .text-link:hover {
-  color: #0760c2;
+  color: #a3d4ff;
   transform: translateY(-1px);
-  opacity: 0.92;
+  opacity: 0.94;
 }
 
 .google-auth-block {
