@@ -182,7 +182,7 @@ export function AuthPage({ error, onEmailAuth, onVerifyEmail, onForgotPassword, 
             </TabsTrigger>
           </Tabs>
 
-          <form className="form-stack" onSubmit={submitAuth}>
+          <form key={authMode} className="form-stack auth-form" onSubmit={submitAuth}>
             {authMode === "signup" && (
               <Label>
                 Name

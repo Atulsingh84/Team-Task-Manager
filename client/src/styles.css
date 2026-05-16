@@ -386,6 +386,21 @@ p {
   gap: 14px;
 }
 
+.auth-form {
+  animation: authFormSlide 320ms ease;
+}
+
+@keyframes authFormSlide {
+  from {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 .text-link {
   background: transparent;
   border: none;
