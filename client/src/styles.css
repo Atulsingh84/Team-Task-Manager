@@ -1,45 +1,45 @@
 :root {
   color-scheme: light;
-  --background: #f7f8fc;
-  --foreground: #101828;
+  --background: #eef8ff;
+  --foreground: #102a43;
   --card: #ffffff;
-  --card-foreground: #101828;
-  --muted: #f4f6fb;
-  --muted-foreground: #667085;
-  --border: #e7eaf3;
-  --input: #e3e7f0;
-  --primary: #5b3df5;
+  --card-foreground: #102a43;
+  --muted: #e8f2ff;
+  --muted-foreground: #556b80;
+  --border: #d0e5ff;
+  --input: #dbeeff;
+  --primary: #0b82f2;
   --primary-foreground: #ffffff;
-  --secondary: #f4f2ff;
-  --secondary-foreground: #4d35d9;
-  --destructive: #e5484d;
-  --success: #31b86b;
-  --warning: #f5a524;
-  --blue: #1d9bf0;
-  --ring: rgba(91, 61, 245, 0.18);
-  --shadow: 0 16px 40px rgba(16, 24, 40, 0.06);
+  --secondary: #dbeeff;
+  --secondary-foreground: #114d8c;
+  --destructive: #de4b4b;
+  --success: #1d9d7a;
+  --warning: #f2a22d;
+  --blue: #1b95f6;
+  --ring: rgba(11, 130, 242, 0.2);
+  --shadow: 0 20px 60px rgba(16, 24, 40, 0.08);
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --background: #070d16;
-  --foreground: #eef4ff;
-  --card: #101826;
-  --card-foreground: #eef4ff;
-  --muted: #121d2d;
-  --muted-foreground: #8f9bae;
-  --border: #1d2a3b;
-  --input: #243248;
-  --primary: #765dff;
-  --primary-foreground: #ffffff;
-  --secondary: #1a2440;
-  --secondary-foreground: #c7d2fe;
+  --background: #071b2e;
+  --foreground: #e7f0ff;
+  --card: #0f1c33;
+  --card-foreground: #e7f0ff;
+  --muted: #102a44;
+  --muted-foreground: #94accf;
+  --border: #1c354e;
+  --input: #17304b;
+  --primary: #3fa7ff;
+  --primary-foreground: #0a192b;
+  --secondary: #152e4d;
+  --secondary-foreground: #b0d2ff;
   --destructive: #ff6b6b;
-  --success: #42d77d;
-  --warning: #f6b739;
-  --blue: #38a7ff;
-  --ring: rgba(118, 93, 255, 0.25);
-  --shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
+  --success: #55d29f;
+  --warning: #f7b955;
+  --blue: #4ca7ff;
+  --ring: rgba(63, 167, 255, 0.22);
+  --shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
 }
 
 * {
@@ -53,7 +53,7 @@ html {
 body {
   margin: 0;
   min-width: 320px;
-  background: radial-gradient(circle at top right, color-mix(in srgb, var(--primary) 9%, transparent), transparent 34%), var(--background);
+  background: radial-gradient(circle at top right, color-mix(in srgb, var(--primary) 14%, transparent), transparent 34%), var(--background);
   color: var(--foreground);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
@@ -148,7 +148,7 @@ p {
 
 .ui-button-default {
   color: var(--primary-foreground);
-  background: linear-gradient(135deg, #6a5cff, var(--primary));
+  background: linear-gradient(135deg, #4aa9ff, var(--primary));
 }
 
 .ui-button-secondary {
